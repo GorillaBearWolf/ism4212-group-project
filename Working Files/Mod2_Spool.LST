@@ -1,0 +1,306 @@
+REM Create each table
+SQL> 
+SQL> CREATE TABLE bill_tos_ci
+  2  (
+  3     bill_to_no   NUMBER(5)
+  4        CONSTRAINT bill_bill_to_no_pk PRIMARY KEY,
+  5     bill_to_first_name VARCHAR2(20)
+  6        CONSTRAINT bill_bill_to_first_name_nn NOT NULL,
+  7     bill_to_last_name VARCHAR2(20)
+  8        CONSTRAINT bill_bill_to_last_name_nn NOT NULL,
+  9     bill_to_street_1  VARCHAR2(30)
+ 10        CONSTRAINT bill_bill_to_street_1_nn NOT NULL,
+ 11     bill_to_street_2  VARCHAR2(15),
+ 12     bill_to_city   VARCHAR2(30)
+ 13        CONSTRAINT bill_bill_to_city_nn NOT NULL,
+ 14     bill_to_state CHAR(2)
+ 15        CONSTRAINT bill_bill_to_state_nn NOT NULL,
+ 16     bill_to_zip   CHAR(5)
+ 17        CONSTRAINT bill_bill_to_zip_nn NOT NULL
+ 18  );
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE vehicles_ci
+  2  (
+  3     vehicle_vin  VARCHAR2(17)
+  4        CONSTRAINT vcle_vehicle_vin_pk PRIMARY KEY,
+  5     vehicle_make  VARCHAR2(20)
+  6        CONSTRAINT vcle_vehicle_make_nn NOT NULL,
+  7     vehicle_model VARCHAR2(20)
+  8        CONSTRAINT vcle_vehicle_model_nn NOT NULL,
+  9     vehicle_year  NUMBER(4)
+ 10        CONSTRAINT vcle_vehicle_year_nn NOT NULL,
+ 11     vehicle_color VARCHAR2(20)
+ 12        CONSTRAINT vcle_vehicle_color_nn NOT NULL,
+ 13     vehicle_dealer_no CHAR(5)
+ 14        CONSTRAINT vcle_vehicle_dealer_no_nn NOT NULL
+ 15  );
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE items_ci
+  2  (
+  3     item_no VARCHAR2(10)
+  4        CONSTRAINT item_item_no_pk PRIMARY KEY,
+  5     item_name VARCHAR2(20)
+  6        CONSTRAINT item_item_name_nn NOT NULL,
+  7     item_description VARCHAR2(30)
+  8        CONSTRAINT item_item_description_nn NOT NULL,
+  9     item_unit_price  NUMBER(6,2)
+ 10        CONSTRAINT item_item_unit_price_nn NOT NULL
+ 11  );
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE owners_ci
+  2  (
+  3     vehicle_vin  VARCHAR2(17),
+  4     bill_to_no  NUMBER(5),
+  5        CONSTRAINT owners_vcle_vin_bill_to_no_pk
+  6           PRIMARY KEY (vehicle_vin,bill_to_no),
+  7        CONSTRAINT owners_vehicle_vin_fk
+  8           FOREIGN KEY (vehicle_vin)
+  9           REFERENCES vehicles_ci(vehicle_vin),
+ 10        CONSTRAINT owners_bill_to_no_fk
+ 11           FOREIGN KEY (bill_to_no)
+ 12           REFERENCES bill_tos_ci(bill_to_no)
+ 13  );
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE invoices_ci
+  2  (
+  3     invoice_no  NUMBER(5)
+  4        CONSTRAINT invs_invoice_no_pk PRIMARY KEY,
+  5     invoice_date DATE
+  6        CONSTRAINT invs_inv_date_nn NOT NULL,
+  7     invoice_odometer  NUMBER(6,2)
+  8        CONSTRAINT invs_inv_odometer_nn NOT NULL,
+  9     invoice_tax  NUMBER(4,2)
+ 10        CONSTRAINT invs_inv_tax_nn NOT NULL,
+ 11     invoice_payment_cred  NUMBER(5,2)
+ 12        CONSTRAINT invs_inv_payment_nn NOT NULL,
+ 13     bill_to_no  NUMBER(5)
+ 14        CONSTRAINT invs_bill_to_no_nn NOT NULL,
+ 15     vehicle_vin  VARCHAR2(17)
+ 16        CONSTRAINT invs_vcle_vehicle_vin_nn NOT NULL,
+ 17        CONSTRAINT invs_bill_to_no_fk
+ 18           FOREIGN KEY (vehicle_vin,bill_to_no)
+ 19           REFERENCES owners_ci(vehicle_vin,bill_to_no)
+ 20  );
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE items_sold_ci
+  2  (
+  3     invoice_no  NUMBER(5),
+  4     item_no  VARCHAR2(10),
+  5     item_qty_sold  NUMBER(3)
+  6        CONSTRAINT items_sold_item_qty_sold_nn  NOT NULL,
+  7     item_unit_price NUMBER(5,2)
+  8        CONSTRAINT items_sold_item_unit_price_nn
+  9           NOT NULL,
+ 10     CONSTRAINT items_sold_inv_no_item_no_pk
+ 11        PRIMARY KEY (invoice_no,item_no),
+ 12     CONSTRAINT items_sold_invoice_no_fk
+ 13        FOREIGN KEY (invoice_no)
+ 14        REFERENCES invoices_ci(invoice_no),
+ 15     CONSTRAINT prods_item_no_fk
+ 16        FOREIGN KEY (item_no)
+ 17        REFERENCES items_ci(item_no)
+ 18  );
+
+Table created.
+
+SQL> REM Create sequences for each table:
+SQL> CREATE SEQUENCE bill_bill_tos_no_seq
+  2  START WITH 8923
+  3  INCREMENT BY 1
+  4  MAXVALUE 99999
+  5  NOCYCLE
+  6  NOCACHE;
+
+Sequence created.
+
+SQL> 
+SQL> CREATE SEQUENCE vcle_vehicle_vin_no_seq
+  2  START WITH 8923
+  3  INCREMENT BY 1
+  4  MAXVALUE 99999
+  5  NOCYCLE
+  6  NOCACHE;
+
+Sequence created.
+
+SQL> 
+SQL> CREATE SEQUENCE item_item_no_no_seq
+  2  START WITH 8923
+  3  INCREMENT BY 1
+  4  MAXVALUE 99999
+  5  NOCYCLE
+  6  NOCACHE;
+
+Sequence created.
+
+SQL> 
+SQL> CREATE SEQUENCE items_sold_item_no_no_seq
+  2  START WITH 8923
+  3  INCREMENT BY 1
+  4  MAXVALUE 99999
+  5  NOCYCLE
+  6  NOCACHE;
+
+Sequence created.
+
+SQL> 
+SQL> CREATE SEQUENCE invs_invoice_no_no_seq
+  2  START WITH 8923
+  3  INCREMENT BY 1
+  4  MAXVALUE 99999
+  5  NOCYCLE
+  6  NOCACHE;
+
+Sequence created.
+
+SQL> 
+SQL> CREATE SEQUENCE owners_vehicle_vin_no_seq
+  2  START WITH 8923
+  3  INCREMENT BY 1
+  4  MAXVALUE 99999
+  5  NOCYCLE
+  6  NOCACHE;
+
+Sequence created.
+
+SQL> REM To describe each table:
+SQL> DESCRIBE items_ci
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ITEM_NO                                   NOT NULL VARCHAR2(10)
+ ITEM_NAME                                 NOT NULL VARCHAR2(20)
+ ITEM_DESCRIPTION                          NOT NULL VARCHAR2(30)
+ ITEM_UNIT_PRICE                           NOT NULL NUMBER(6,2)
+
+SQL> DESCRIBE vehicles_ci
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ VEHICLE_VIN                               NOT NULL VARCHAR2(17)
+ VEHICLE_MAKE                              NOT NULL VARCHAR2(20)
+ VEHICLE_MODEL                             NOT NULL VARCHAR2(20)
+ VEHICLE_YEAR                              NOT NULL NUMBER(4)
+ VEHICLE_COLOR                             NOT NULL VARCHAR2(20)
+ VEHICLE_DEALER_NO                         NOT NULL CHAR(5)
+
+SQL> DESCRIBE bills_to_ci
+ERROR:
+ORA-04043: object bills_to_ci does not exist 
+
+
+SQL> DESCRIBE owners_ci
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ VEHICLE_VIN                               NOT NULL VARCHAR2(17)
+ BILL_TO_NO                                NOT NULL NUMBER(5)
+
+SQL> DESCRIBE invoices_ci
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ INVOICE_NO                                NOT NULL NUMBER(5)
+ INVOICE_DATE                              NOT NULL DATE
+ INVOICE_ODOMETER                          NOT NULL NUMBER(6,2)
+ INVOICE_TAX                               NOT NULL NUMBER(4,2)
+ INVOICE_PAYMENT_CRED                      NOT NULL NUMBER(5,2)
+ BILL_TO_NO                                NOT NULL NUMBER(5)
+ VEHICLE_VIN                               NOT NULL VARCHAR2(17)
+
+SQL> DESCRIBE items_sold_ci
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ INVOICE_NO                                NOT NULL NUMBER(5)
+ ITEM_NO                                   NOT NULL VARCHAR2(10)
+ ITEM_QTY_SOLD                             NOT NULL NUMBER(3)
+ ITEM_UNIT_PRICE                           NOT NULL NUMBER(5,2)
+
+SQL> 
+SQL> REM To get information about constraints:
+SQL> COLUMN constraint_name FORMAT A32;
+SQL> COLUMN column_name FORMAT A20;
+SQL> COLUMN table_name FORMAT A15;
+SQL> SELECT constraint_name, column_name,table_name
+  2  FROM user_cons_columns
+  3  WHERE constraint_name NOT LIKE 'BIN%'
+  4  ORDER BY constraint_name;
+
+CONSTRAINT_NAME                  COLUMN_NAME          TABLE_NAME                
+-------------------------------- -------------------- ---------------           
+BILL_BILL_TO_CITY_NN             BILL_TO_CITY         BILL_TOS_CI               
+BILL_BILL_TO_FIRST_NAME_NN       BILL_TO_FIRST_NAME   BILL_TOS_CI               
+BILL_BILL_TO_LAST_NAME_NN        BILL_TO_LAST_NAME    BILL_TOS_CI               
+BILL_BILL_TO_NO_PK               BILL_TO_NO           BILL_TOS_CI               
+BILL_BILL_TO_STATE_NN            BILL_TO_STATE        BILL_TOS_CI               
+BILL_BILL_TO_STREET_1_NN         BILL_TO_STREET_1     BILL_TOS_CI               
+BILL_BILL_TO_ZIP_NN              BILL_TO_ZIP          BILL_TOS_CI               
+INVS_BILL_TO_NO_FK               BILL_TO_NO           INVOICES_CI               
+INVS_BILL_TO_NO_FK               VEHICLE_VIN          INVOICES_CI               
+INVS_BILL_TO_NO_NN               BILL_TO_NO           INVOICES_CI               
+INVS_INVOICE_NO_PK               INVOICE_NO           INVOICES_CI               
+
+CONSTRAINT_NAME                  COLUMN_NAME          TABLE_NAME                
+-------------------------------- -------------------- ---------------           
+INVS_INV_DATE_NN                 INVOICE_DATE         INVOICES_CI               
+INVS_INV_ODOMETER_NN             INVOICE_ODOMETER     INVOICES_CI               
+INVS_INV_PAYMENT_NN              INVOICE_PAYMENT_CRED INVOICES_CI               
+INVS_INV_TAX_NN                  INVOICE_TAX          INVOICES_CI               
+INVS_VCLE_VEHICLE_VIN_NN         VEHICLE_VIN          INVOICES_CI               
+ITEMS_SOLD_INVOICE_NO_FK         INVOICE_NO           ITEMS_SOLD_CI             
+ITEMS_SOLD_INV_NO_ITEM_NO_PK     INVOICE_NO           ITEMS_SOLD_CI             
+ITEMS_SOLD_INV_NO_ITEM_NO_PK     ITEM_NO              ITEMS_SOLD_CI             
+ITEMS_SOLD_ITEM_QTY_SOLD_NN      ITEM_QTY_SOLD        ITEMS_SOLD_CI             
+ITEMS_SOLD_ITEM_UNIT_PRICE_NN    ITEM_UNIT_PRICE      ITEMS_SOLD_CI             
+ITEM_ITEM_DESCRIPTION_NN         ITEM_DESCRIPTION     ITEMS_CI                  
+
+CONSTRAINT_NAME                  COLUMN_NAME          TABLE_NAME                
+-------------------------------- -------------------- ---------------           
+ITEM_ITEM_NAME_NN                ITEM_NAME            ITEMS_CI                  
+ITEM_ITEM_NO_PK                  ITEM_NO              ITEMS_CI                  
+ITEM_ITEM_UNIT_PRICE_NN          ITEM_UNIT_PRICE      ITEMS_CI                  
+OWNERS_BILL_TO_NO_FK             BILL_TO_NO           OWNERS_CI                 
+OWNERS_VCLE_VIN_BILL_TO_NO_PK    VEHICLE_VIN          OWNERS_CI                 
+OWNERS_VCLE_VIN_BILL_TO_NO_PK    BILL_TO_NO           OWNERS_CI                 
+OWNERS_VEHICLE_VIN_FK            VEHICLE_VIN          OWNERS_CI                 
+PRODS_ITEM_NO_FK                 ITEM_NO              ITEMS_SOLD_CI             
+VCLE_VEHICLE_COLOR_NN            VEHICLE_COLOR        VEHICLES_CI               
+VCLE_VEHICLE_DEALER_NO_NN        VEHICLE_DEALER_NO    VEHICLES_CI               
+VCLE_VEHICLE_MAKE_NN             VEHICLE_MAKE         VEHICLES_CI               
+
+CONSTRAINT_NAME                  COLUMN_NAME          TABLE_NAME                
+-------------------------------- -------------------- ---------------           
+VCLE_VEHICLE_MODEL_NN            VEHICLE_MODEL        VEHICLES_CI               
+VCLE_VEHICLE_VIN_PK              VEHICLE_VIN          VEHICLES_CI               
+VCLE_VEHICLE_YEAR_NN             VEHICLE_YEAR         VEHICLES_CI               
+
+36 rows selected.
+
+SQL> 
+SQL> REM To get information about sequences:
+SQL> SELECT sequence_name, increment_by
+  2  FROM user_sequences;
+
+SEQUENCE_NAME                  INCREMENT_BY                                     
+------------------------------ ------------                                     
+BILL_BILL_TOS_NO_SEQ                      1                                     
+INVS_INVOICE_NO_NO_SEQ                    1                                     
+ITEMS_SOLD_ITEM_NO_NO_SEQ                 1                                     
+ITEM_ITEM_NO_NO_SEQ                       1                                     
+OWNERS_VEHICLE_VIN_NO_SEQ                 1                                     
+VCLE_VEHICLE_VIN_NO_SEQ                   1                                     
+
+6 rows selected.
+
+SQL> 
