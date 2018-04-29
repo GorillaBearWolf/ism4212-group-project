@@ -1,5 +1,3 @@
-/*NOTE: Pull request test*/
-
 /*NOTE: CREATE TABLES*/
 
 CREATE TABLE vehicles_ci
