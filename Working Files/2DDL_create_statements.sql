@@ -1,3 +1,5 @@
+-- Pull request test
+
 -- CREATE TABLES
 
 CREATE TABLE vehicles_ci
