@@ -1,6 +1,6 @@
--- Pull request test
+/*NOTE: Pull request test*/
 
--- CREATE TABLES
+/*NOTE: CREATE TABLES*/
 
 CREATE TABLE vehicles_ci
 (
@@ -101,7 +101,7 @@ CREATE TABLE items_sold_ci
       REFERENCES items_ci(item_no)
 );
 
--- TO GET INFORMATION ABOUT TABLES
+/*NOTE: TO GET INFORMATION ABOUT TABLES*/
 
 DESCRIBE vehicles_ci
 DESCRIBE bill_tos_ci
@@ -110,7 +110,7 @@ DESCRIBE owners_ci
 DESCRIBE invoices_ci
 DESCRIBE items_sold_ci
 
--- TO GET INFORMATION ABOUT CONSTRAINTS
+/*NOTE: TO GET INFORMATION ABOUT CONSTRAINTS*/
 
 COLUMN constraint_name FORMAT A32;
 COLUMN column_name FORMAT A20;

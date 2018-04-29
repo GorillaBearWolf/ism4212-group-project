@@ -1,4 +1,13 @@
-/*NOTE: DROP ALL TABLES AND SEQUENCES*/
+/*NOTE: DROP ALL TABLES*/
+
+DROP TABLE items_sold_ci;
+DROP TABLE items_ci;
+DROP TABLE invoices_ci;
+DROP TABLE owners_ci;
+DROP TABLE bill_tos_ci;
+DROP TABLE vehicles_ci;
+
+/*NOTE: DROP ALL SEQUENCES*/
 
 DROP SEQUENCE bill_tos_bill_to_no_seq;
 DROP SEQUENCE items_item_no_seq;
