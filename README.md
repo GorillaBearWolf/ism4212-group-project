@@ -1,3 +1,3 @@
-# ISM4212-project
+# ISM4212-group-project
 
 Repo for Database Administration class project
