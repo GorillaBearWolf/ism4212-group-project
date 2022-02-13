@@ -1,3 +1,0 @@
-ORACLE CREDS
-===============
-system:avia3259
